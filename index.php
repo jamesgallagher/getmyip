@@ -46,6 +46,6 @@ curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($curl);
 curl_close($curl);
 header('Content-Type: application/json; charset=utf-8');
-print $ip . "/n/n";
+print $ip . "\n\n";
 print $response;
 echo "\n";
