@@ -2,35 +2,33 @@
 /**
  * Gets IP address.
  */
-function getIPAddress()
-{
-    $ipAddress = '';
-    if (! empty($_SERVER['HTTP_CLIENT_IP'])) {
-        // to get shared ISP IP address
-        $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
-    } else if (! empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        // check for IPs passing through proxy servers
-        // check if multiple IP addresses are set and take the first one
-        $ipAddressList = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-        foreach ($ipAddressList as $ip) {
-            if (! empty($ip)) {
-                // if you prefer, you can check for valid IP address here
-                $ipAddress = $ip;
-                break;
+function getIPAddress() {
+    // Specify the headers to check
+    $headersToCheck = [
+        'HTTP_CLIENT_IP',
+        'HTTP_X_FORWARDED_FOR',
+        'HTTP_X_FORWARDED',
+        'HTTP_X_CLUSTER_CLIENT_IP',
+        'HTTP_FORWARDED_FOR',
+        'HTTP_FORWARDED',
+        'REMOTE_ADDR'
+    ];
+
+    foreach ($headersToCheck as $header) {
+        if (!empty($_SERVER[$header])) {
+            // If multiple IP addresses are present, extract the first one
+            $ipAddresses = explode(',', $_SERVER[$header]);
+            $ipAddress = trim($ipAddresses[0]);
+
+            // Validate the IP address
+            if (filter_var($ipAddress, FILTER_VALIDATE_IP)) {
+                return $ipAddress;
             }
         }
-    } else if (! empty($_SERVER['HTTP_X_FORWARDED'])) {
-        $ipAddress = $_SERVER['HTTP_X_FORWARDED'];
-    } else if (! empty($_SERVER['HTTP_X_CLUSTER_CLIENT_IP'])) {
-        $ipAddress = $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
-    } else if (! empty($_SERVER['HTTP_FORWARDED_FOR'])) {
-        $ipAddress = $_SERVER['HTTP_FORWARDED_FOR'];
-    } else if (! empty($_SERVER['HTTP_FORWARDED'])) {
-        $ipAddress = $_SERVER['HTTP_FORWARDED'];
-    } else if (! empty($_SERVER['REMOTE_ADDR'])) {
-        $ipAddress = $_SERVER['REMOTE_ADDR'];
     }
-    return $ipAddress;
+
+    // Return a default IP address if none of the headers contain a valid IP address
+    return 'unknown';
 }
 
 $ip = getIPAddress();  
