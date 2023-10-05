@@ -31,6 +31,21 @@ function getIPAddress() {
     return 'unknown';
 }
 
+// Basic function to check if it is a browser
+function isRequestFromBrowser() {
+    $userAgent = $_SERVER['HTTP_USER_AGENT'];
+
+    // Check if the User-Agent header contains typical browser keywords
+    $browserKeywords = array('Mozilla', 'AppleWebKit', 'Chrome', 'Safari', 'Firefox', 'Opera');
+    foreach ($browserKeywords as $keyword) {
+        if (strpos($userAgent, $keyword) !== false) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 $ip = getIPAddress();  
 
 // Switch API provider to provider that allows 42 reqs per minute 
@@ -46,6 +61,12 @@ curl_close($curl);
 
 // Parse the JSON response
 $data = json_decode($response, true);
+
+//If request is not from a browser, assume bash and just print IP. 
+if (!isRequestFromBrowser()) {
+    echo $ip;
+    exit;
+}
 
 // HTML output
 ?>
