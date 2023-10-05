@@ -43,7 +43,40 @@ curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 $response = curl_exec($curl);
 curl_close($curl);
-header('Content-Type: application/json; charset=utf-8');
-print $ip . "\n\n";
-print $response;
-echo "\n";
+
+// Parse the JSON response
+$data = json_decode($response, true);
+
+// HTML output
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>IP Information</h1>
+        <p><strong>Your IP Address:</strong> <?php echo $ip; ?></p>
+        <h2>Location Information</h2>
+        <p><strong>Country:</strong> <?php echo $data['country']; ?></p>
+        <p><strong>City:</strong> <?php echo $data['city']; ?></p>
+        <p><strong>ISP:</strong> <?php echo $data['isp']; ?></p>
+    </div>
+</body>
+</html>
