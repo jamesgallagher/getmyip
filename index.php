@@ -64,7 +64,7 @@ $data = json_decode($response, true);
 
 //If request is not from a browser, assume bash and just print IP. 
 if (!isRequestFromBrowser()) {
-    echo $ip;
+    echo $ip . "\n\n";
     exit;
 }
 
